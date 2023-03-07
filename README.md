@@ -1,4 +1,6 @@
 # AbuseDB-Powershell-API
+Script to check ips with AbuseDB API
+
 
 1- Add all IP's to the file "File.txt"
 
