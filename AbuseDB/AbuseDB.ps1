@@ -1,6 +1,7 @@
 
 $ApiKey = ""
 
+
 if ($ApiKey.Length -eq 0){
 Write-Warning "[!] Enter your Apikey in AbuseDB.ps1 file"
 pause
@@ -15,6 +16,7 @@ $RutaAbuse = "\data\AbuseDB-output.json"
 $ips = Get-Content -Path "file.txt" | Sort-Object -Property Length | Select-Object -Unique
 
 $total = $ips.count
+$duplicateCount = $ips.Count - $total
 
 Write-host ""
 Write-Host @"
@@ -28,10 +30,22 @@ Write-Host @"
 
 "@ -ForegroundColor Yellow 
 
-Write-host "Total IPs: " -nonewline
-Write-host "$total" -nonewline -ForegroundColor Yellow
-Write-host ""
-Write-host ""
+# Check if the total exceeds or equals the limit
+if ($total -ge 1000) {
+    Write-Host @"
+WARNING:
+Detected $total IPs to analyze. This may exceed the limit of the free API.
+"@ -ForegroundColor Red
+
+    $response = Read-Host "Do you want to continue? (Y/N)"
+    
+    if ($response -ne 'Y') {
+        Write-Host "Execution canceled by the user." -ForegroundColor Cyan
+        exit
+    }
+}
+
+Write-Host "Starting analysis for $total IPs..." -ForegroundColor Green
 
 $i=0
 $myvar = @()
